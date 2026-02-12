@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>14 de Febrero 💘</title>
+
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@300;400;500&family=Dancing+Script:wght@500;600&display=swap" rel="stylesheet">
+
+<!-- Tailwind -->
+<script src="https://cdn.tailwindcss.com"></script>
+
+<!-- FontAwesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+
+<!-- Confetti -->
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+<style>
+body{
+font-family:'Inter',sans-serif;
+padding-top:env(safe-area-inset-top);
+padding-bottom:env(safe-area-inset-bottom);
+background:linear-gradient(to bottom,#ffe4ec,#ffffff);
+overflow-x:hidden;
+}
+
+/* textura premium */
+body::before{
+content:"";
+position:fixed;
+inset:0;
+background:url("https://www.transparenttextures.com/patterns/soft-wallpaper.png");
+opacity:0.15;
+pointer-events:none;
+}
+
+h1,h2,h3{
+font-family:'Playfair Display',serif;
+}
+
+.smooth{transition:all 0.5s ease;}
+
+.vinyl{
+width:60px;height:60px;border-radius:50%;
+background:radial-gradient(circle,#111 35%,#333 60%,#000 100%);
+position:relative;
+}
+.vinyl::after{
+content:"";
+width:15px;height:15px;
+background:#ff4d6d;border-radius:50%;
+position:absolute;top:50%;left:50%;
+transform:translate(-50%,-50%);
+}
+.spin{animation:spin 3s linear infinite;}
+@keyframes spin{from{transform:rotate(0);}to{transform:rotate(360deg);}}
+
+.heartbeat{animation:heartbeat 1.2s infinite;}
+@keyframes heartbeat{
+0%,100%{transform:scale(1);}
+50%{transform:scale(1.15);}
+}
+
+/* Polaroids */
+.polaroid{
+width:150px;
+background:white;
+padding:10px 10px 25px 10px;
+position:absolute;
+border-radius:0.5rem;
+box-shadow:0 20px 40px rgba(0,0,0,0.15);
+transition:all 0.5s ease;
+}
+.polaroid img{width:100%;border-radius:0.3rem;}
+.caption{
+font-family:'Dancing+Script',cursive;
+margin-top:6px;
+font-size:16px;
+}
+.polaroid.active{
+transform:scale(1.2) rotate(0deg) !important;
+z-index:999;
+}
+
+/* Fondo mágico jardín */
+#jardin{
+background:radial-gradient(circle at 20% 20%,#ffd6e8,#fff);
+overflow:hidden;
+}
+
+.star{
+position:absolute;
+width:4px;height:4px;
+background:white;
+border-radius:50%;
+animation:twinkle 3s infinite alternate;
+}
+@keyframes twinkle{
+from{opacity:0.3;}
+to{opacity:1;}
+}
+
+.floating-heart{
+position:absolute;
+color:#ff4d6d;
+animation:floatUp 6s linear infinite;
+}
+@keyframes floatUp{
+from{transform:translateY(100vh);opacity:1;}
+to{transform:translateY(-10vh);opacity:0;}
+}
+
+.magic{
+position:absolute;
+width:6px;height:6px;
+background:white;
+border-radius:50%;
+pointer-events:none;
+animation:fade 1s forwards;
+}
+@keyframes fade{
+to{opacity:0;transform:scale(2);}
+}
+/* Corazones flotando globales */
+.floating-heart-global{
+position:fixed;
+bottom:-20px;
+font-size:20px;
+animation:floatUpGlobal linear forwards;
+pointer-events:none;
+z-index:0;
+opacity:0.8;
+filter:drop-shadow(0 5px 10px rgba(255,105,180,0.4));
+}
+
+@keyframes floatUpGlobal{
+0%{
+transform:translateY(0) scale(1);
+opacity:0.9;
+}
+100%{
+transform:translateY(-110vh) scale(1.3);
+opacity:0;
+}
+}
+
+
+</style>
+</head>
+
+<body class="text-center text-gray-700">
+
+<!-- 🎵 Música flotante -->
+<div class="fixed top-4 right-4 z-50 flex items-center gap-3 bg-white/80 backdrop-blur-md px-4 py-2 rounded-full shadow-xl">
+<div id="vinyl" class="vinyl"></div>
+<button id="musicBtn" class="text-pink-500 text-xl">
+<i class="fa-solid fa-play"></i>
+</button>
+</div>
+
+<audio id="bgMusic" loop src="cancion.mp3"></audio>
+
+<!-- 💌 BIENVENIDA SOBRE -->
+<section id="welcome" class="min-h-screen flex flex-col justify-center items-center">
+<div id="envelope" class="w-40 h-28 bg-pink-300 rounded-xl shadow-xl cursor-pointer smooth relative">
+<div class="absolute inset-0 flex items-center justify-center text-white text-xl">
+💌
+</div>
+</div>
+<p class="mt-6 text-pink-600">Toca el sobre</p>
+</section>
+
+<!-- 💘 MAIN -->
+<section id="main" class="hidden min-h-screen flex flex-col items-center justify-center gap-10 px-6">
+
+<h1 class="text-3xl text-pink-600">¿Quieres ser mi Valentín? 💘</h1>
+
+<div class="relative flex gap-6 justify-center">
+<button id="yesBtn" class="bg-pink-500 text-white px-8 py-4 rounded-full heartbeat">
+SÍ 💖
+</button>
+<button id="noBtn" class="bg-gray-200 px-8 py-4 rounded-full absolute">
+NO 
+</button>
+</div>
+
+<div class="flex flex-col gap-6 mt-10">
+<button id="momentosBtn" class="bg-white px-8 py-4 rounded-full shadow-xl text-pink-600 smooth">
+Mi esposa✨
+</button>
+
+<button id="jardinBtn" class="bg-white px-8 py-4 rounded-full shadow-xl text-pink-600 smooth">
+Mi vida entera 🌸
+</button>
+</div>
+
+<footer class="mt-20 max-w-md">
+<h3 class="text-xl text-pink-600 mb-4">Para ti ❤️</h3>
+<p id="typedText"></p>
+</footer>
+
+</section>
+
+<!-- 📸 GALERIA -->
+<section id="gallery" class="hidden fixed inset-0 bg-gradient-to-b from-pink-100 to-white">
+<div id="target" class="absolute inset-0 flex items-center justify-center">
+<div id="circle" class="w-40 h-40 border-4 border-pink-400 rounded-full flex items-center justify-center text-pink-500 smooth">
+Toca aquí
+</div>
+</div>
+
+<div id="polaroidContainer" class="hidden relative w-full h-full"></div>
+
+<button id="backGallery" class="fixed bottom-8 right-6 w-12 h-12 bg-pink-500 text-white rounded-full shadow-xl flex items-center justify-center">
+<i class="fa-solid fa-heart"></i>
+</button>
+</section>
+
+<!-- 🌸 JARDIN -->
+<section id="jardin" class="hidden fixed inset-0">
+
+<div class="absolute inset-0" id="stars"></div>
+
+<div class="flex flex-col items-center justify-center h-full text-center relative z-10">
+<div id="bigHeart" class="text-6xl text-pink-500 heartbeat cursor-pointer">❤️</div>
+<p id="lovePhrase" class="mt-6 text-pink-600 text-xl"></p>
+
+<button id="poemaBtn" class="mt-10 bg-white/70 px-6 py-3 rounded-full shadow-xl smooth">
+Descubre un Poema
+</button>
+
+<p id="poemaText" class="mt-6 max-w-xs text-sm"></p>
+</div>
+
+<button id="backJardin" class="fixed bottom-8 right-6 w-12 h-12 bg-pink-500 text-white rounded-full shadow-xl flex items-center justify-center">
+<i class="fa-solid fa-heart"></i>
+</button>
+
+</section>
+
+<script>
+
+/* SOBRE */
+document.getElementById("envelope").onclick=()=>{
+document.getElementById("welcome").classList.add("hidden");
+document.getElementById("main").classList.remove("hidden");
+};
+
+/* MUSICA */
+const music=document.getElementById("bgMusic");
+const btn=document.getElementById("musicBtn");
+const vinyl=document.getElementById("vinyl");
+btn.onclick=()=>{
+if(music.paused){music.play();vinyl.classList.add("spin");btn.innerHTML='<i class="fa-solid fa-pause"></i>';}
+else{music.pause();vinyl.classList.remove("spin");btn.innerHTML='<i class="fa-solid fa-play"></i>';}
+};
+
+/* BOTON NO ESCAPA */
+const noBtn=document.getElementById("noBtn");
+document.addEventListener("mousemove",(e)=>{
+const rect=noBtn.getBoundingClientRect();
+const dist=Math.hypot(e.clientX-(rect.left+rect.width/2),e.clientY-(rect.top+rect.height/2));
+if(dist<100){
+noBtn.style.top=Math.random()*200+"px";
+noBtn.style.left=Math.random()*200+"px";
+}
+});
+
+/* CONFETI */
+document.getElementById("yesBtn").onclick=()=>{
+confetti({particleCount:200,spread:120,origin:{y:0.6},shapes:["heart"]});
+};
+
+/* CARTA TYPEWRITER */
+const message="Por ahora este 14 será a distancia, pero si Dios nos lo permite, pasaremos juntos todos los demás ❤️";
+let i=0;
+function typeWriter(){
+if(i<message.length){
+document.getElementById("typedText").textContent+=message.charAt(i);
+i++;
+setTimeout(typeWriter,40);
+}}
+setTimeout(typeWriter,1500);
+
+/* GALERIA */
+const gallery=document.getElementById("gallery");
+document.getElementById("momentosBtn").onclick=()=>{
+gallery.classList.remove("hidden");
+document.getElementById("main").classList.add("hidden");
+
+history.pushState({page:"gallery"}, "", "#gallery");
+};
+
+document.getElementById("circle").onclick=()=>{
+document.getElementById("target").classList.add("hidden");
+const container=document.getElementById("polaroidContainer");
+container.classList.remove("hidden");
+
+const photos=[
+{src:"foto1.jpg",text:"Mi pequeña💕"},
+{src:"foto2.jpg",text:"Obra de arte ✨"},
+{src:"foto3.jpg",text:"Mis ojos HERMOSOS 🌹"},
+{src:"foto4.jpg",text:"mi enfermera preciosa 🌹"}
+];
+const screenWidth = window.innerWidth;
+const screenHeight = window.innerHeight;
+
+const marginX = 180;  // ancho aproximado polaroid
+const marginY = 250;  // alto aproximado polaroid
+photos.forEach(p=>{
+let div=document.createElement("div");
+div.className="polaroid";
+div.style.left = Math.random() * (screenWidth - marginX) + "px";
+div.style.top = Math.random() * (screenHeight - marginY) + "px";
+div.style.transform="rotate("+(Math.random()*20-10)+"deg)";
+div.innerHTML=`<img src="${p.src}"><div class="caption">${p.text}</div>`;
+div.onclick=()=>{
+document.querySelectorAll(".polaroid").forEach(el=>el.classList.remove("active"));
+div.classList.add("active");
+};
+container.appendChild(div);
+});
+};
+
+document.getElementById("backGallery").onclick=()=>{
+history.back();
+};
+document.getElementById("backJardin").onclick=()=>{
+history.back();
+};
+
+/* JARDIN */
+const jardin=document.getElementById("jardin");
+document.getElementById("jardinBtn").onclick=()=>{
+jardin.classList.remove("hidden");
+createStars();
+};
+
+document.getElementById("jardinBtn").onclick=()=>{
+document.getElementById("main").classList.add("hidden");
+document.getElementById("jardin").classList.remove("hidden");
+
+history.pushState({page:"jardin"}, "", "#jardin");
+};
+
+function createStars(){
+const stars=document.getElementById("stars");
+stars.innerHTML="";
+for(let i=0;i<40;i++){
+let s=document.createElement("div");
+s.className="star";
+s.style.top=Math.random()*100+"%";
+s.style.left=Math.random()*100+"%";
+stars.appendChild(s);
+}
+}
+
+/* corazones flotando */
+setInterval(()=>{
+if(!jardin.classList.contains("hidden")){
+let heart=document.createElement("div");
+heart.className="floating-heart";
+heart.innerHTML="❤";
+heart.style.left=Math.random()*100+"%";
+heart.style.fontSize=(Math.random()*20+10)+"px";
+jardin.appendChild(heart);
+setTimeout(()=>heart.remove(),6000);
+}
+},800);
+
+/* corazones al tocar */
+jardin.addEventListener("click",(e)=>{
+for(let i=0;i<6;i++){
+let h=document.createElement("div");
+h.className="magic";
+h.style.left=e.clientX+"px";
+h.style.top=e.clientY+"px";
+jardin.appendChild(h);
+setTimeout(()=>h.remove(),1000);
+}
+});
+
+/* frases */
+const phrases=["Te amo hasta hacernos viejitos❤️","Mi lugar favorito","Mi siempre ❤️","Mi hogar"];
+document.getElementById("bigHeart").onclick=()=>{
+document.getElementById("lovePhrase").textContent=phrases[Math.floor(Math.random()*phrases.length)];
+};
+
+/* poema */
+const poemas = [
+`Eres la calma en mi tormenta,
+la luz suave que me guía,
+mi pensamiento favorito,
+mi amor, mi alegría.`,
+
+`Si el mundo se detuviera,
+yo solo miraría tus ojos,
+porque en ellos encuentro
+mi hogar y mis antojos.`,
+
+`No necesito estrellas,
+si tu sonrisa ilumina,
+no necesito destino,
+si tu mano camina en la mía.`,
+
+`A distancia o cerca,
+mi corazón te elige,
+porque lo nuestro no es suerte,
+es algo que el alma dirige.`,
+
+`Eres mi coincidencia favorita,
+mi casualidad perfecta,
+mi historia más bonita,
+mi eternidad correcta.`
+];
+
+document.getElementById("poemaBtn").onclick=()=>{
+const el=document.getElementById("poemaText");
+el.textContent="";
+
+const poemaAleatorio = poemas[Math.floor(Math.random()*poemas.length)];
+
+let i=0;
+function write(){
+if(i<poemaAleatorio.length){
+el.textContent+=poemaAleatorio.charAt(i);
+i++;
+setTimeout(write,40);
+}
+}
+write();
+};
+function createFloatingHeartGlobal(){
+
+const heart = document.createElement("div");
+heart.className="floating-heart-global";
+
+const hearts=["💗","💖","💘","💕","💞"];
+heart.innerHTML=hearts[Math.floor(Math.random()*hearts.length)];
+
+heart.style.left=Math.random()*100+"vw";
+
+const size = Math.random()*20+15;
+heart.style.fontSize=size+"px";
+
+const duration = Math.random()*5+5;
+heart.style.animationDuration=duration+"s";
+
+document.body.appendChild(heart);
+
+setTimeout(()=>{
+heart.remove();
+},duration*1000);
+
+}
+
+// Crear corazones constantemente
+setInterval(()=>{
+createFloatingHeartGlobal();
+},600);
+window.addEventListener("popstate", ()=>{
+
+// Ocultamos todo primero
+document.getElementById("main").classList.add("hidden");
+document.getElementById("gallery").classList.add("hidden");
+document.getElementById("jardin").classList.add("hidden");
+
+// Mostramos según hash
+if(location.hash === "#gallery"){
+document.getElementById("gallery").classList.remove("hidden");
+}
+else if(location.hash === "#jardin"){
+document.getElementById("jardin").classList.remove("hidden");
+}
+else{
+document.getElementById("main").classList.remove("hidden");
+}
+
+});
+
+
+</script>
+</body>
+</html>
